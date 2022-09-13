@@ -19,6 +19,15 @@ const userSchema = new Schema({
     required: true,
     min: 6,
     max: 1000
+  },
+  lifxID: {
+    type: String
+  },
+  friends: {
+    type: Array
+  },
+  recentColors: {
+    type: Array
   }
 });
 

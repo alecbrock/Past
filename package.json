@@ -8,7 +8,7 @@
     "startAuth": "nodemon authServer.js"
   },
   "repository": {
-    "type": "git",
+    "type": "module",
     "url": "git+https://github.com/alecbrock/Past.git"
   },
   "author": "",
@@ -19,6 +19,7 @@
   "homepage": "https://github.com/alecbrock/Past#readme",
   "dependencies": {
     "@hapi/joi": "^15.0.3",
+    "api": "^4.5.2",
     "axios": "^0.27.2",
     "bcrypt": "^5.0.1",
     "bcryptjs": "^2.4.3",
@@ -30,7 +31,9 @@
     "express-handlebars": "^6.0.6",
     "express-session": "^1.17.3",
     "jsonwebtoken": "^8.5.1",
+    "lifx-api": "^1.0.1",
     "mongoose": "^6.5.2",
+    "node-fetch": "^3.2.10",
     "passport": "^0.6.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0"
