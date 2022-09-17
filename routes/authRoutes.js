@@ -24,7 +24,10 @@ router.post('/register', async (req, res) => {
     password: hashedPassword,
     lifxID: '',
     friends: [req.body.name],
-    recentColors: []
+    recentColors: [],
+    pendingFriends: [],
+    profileColor: '#5D3FD3',
+    scenes: {}
   })
 
   try {
@@ -53,13 +56,67 @@ router.post('/login', async (req, res) => {
     .send(token)
 });
 
-router.post('/checkAuth', verify, async (req, res) => {
-  const user = await User.findOne({ '_id': req.user._id });
+router.post('/check_auth', verify, async (req, res) => {
+  console.log('hit on auth check')
+  //possibly check to see if user documents have changed somehow and send that down
+  res.send('good to go')
+})
+
+router.post('/user_info', verify, async (req, res) => {
+  console.log('hit on user info')
+  let formattedFriendColors = [], formattedPendingColors = [];
+
+  let user = await User.findOne({ '_id': req.user._id });
   if (!user) return res.status(400).send({ msg: 'Trouble finding user information' })
 
-  const revisedUser = {recentColors: user.recentColors, name: user.name, friends: user.friends};
-  res.send(revisedUser)
-});
+  let friendColors = await User.find({ 'name': { $in: user.friends } });
+  if (!friendColors) return res.status(400).send({ msg: 'Trouble finding friend proile colors' })
+  let pendingFriendColors = await User.find({ 'name': { $in: user.pendingFriends } });
+  if (!pendingFriendColors) return res.status(400).send({ msg: 'Trouble finding pending friend profile colors' });
 
+  if (friendColors.length) {
+    formattedFriendColors = friendColors.map((x) => ({ [`${x.name}`]: x.profileColor }))
+  }
+
+  if (pendingFriendColors.length) {
+    formattedPendingColors = pendingFriendColors.map((x) => ({ [`${x.name}`]: x.profileColor }))
+  }
+
+  let resultState = await axios.post('http://localhost:3002/lifx/state', { lifxID: user.lifxID })
+  if (!resultState) return res.status(400).send({ msg: 'Could not find lifx state' })
+
+  const result = {
+    colors: formattedFriendColors.concat(formattedPendingColors).reduce(((r, c) => Object.assign(r, c)), {}),
+    user: { recentColors: user.recentColors, name: user.name, friends: user.friends, pendingFriends: user.pendingFriends, profileColor: user.profileColor, scenes: user.scenes },
+    state: resultState.data
+  }
+  res.send(result);
+})
+
+// router.post('/checkAuth_color', verify, async (req, res) => {
+//   let formattedFriendColors = [], formattedPendingColors = [];
+
+//   let user = await User.findOne({ '_id': req.user._id });
+//   if (!user) return res.status(400).send({ msg: 'Trouble finding user information' })
+
+//   let friendColors = await User.find({ 'name': { $in: user.friends } });
+//   if (!friendColors) return res.status(400).send({ msg: 'Trouble finding friend proile colors' })
+//   let pendingFriendColors = await User.find({ 'name': { $in: user.pendingFriends } });
+//   if (!pendingFriendColors) return res.status(400).send({ msg: 'Trouble finding pending friend profile colors' });
+
+//   if (friendColors.length) {
+//     formattedFriendColors = friendColors.map((x) => ({ [`${x.name}`]: x.profileColor }))
+//   }
+
+//   if (pendingFriendColors.length) {
+//     formattedPendingColors = pendingFriendColors.map((x) => ({ [`${x.name}`]: x.profileColor }))
+//   }
+
+//   res.send(
+//     {
+//       colors: formattedFriendColors.concat(formattedPendingColors).reduce(((r, c) => Object.assign(r, c)), {}),
+//       user: { recentColors: user.recentColors, name: user.name, friends: user.friends, pendingFriends: user.pendingFriends, profileColor: user.profileColor, scenes: user.scenes }
+//     });
+// })
 
 module.exports = router;

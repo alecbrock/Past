@@ -28,6 +28,15 @@ const userSchema = new Schema({
   },
   recentColors: {
     type: Array
+  },
+  pendingFriends: {
+    type: Array
+  },
+  profileColor: {
+    type: String
+  },
+  scenes: {
+    type: Object
   }
 });
 

@@ -4,6 +4,7 @@ const { User } = require('../models/user-model');
 var lifxObj = require('../lifx-helper');
 var lifx = new lifxObj("c35ba47dc300ca3e18e0259d3ea85928200c775aa724d9a23972fff34da0cce9");
 
+
 router.post('/toggle', verify, async (req, res) => {
   const user = await User.findOne({ '_id': req.user._id });
   if (!user) return res.status(400).send({ msg: 'Trouble finding user information' })
@@ -46,9 +47,7 @@ router.post('/color', verify, async (req, res) => {
 
   lifx.setState(`id:${selectedUser}`, { color: req.body.color }, (err, data) => {
     if (err) return res.status(400).send({ msg: 'Issue connecting to lifx' })
-    const revisedUser = { recentColors: user.recentColors, name: user.name, friends: user.friends };
-    console.log(revisedUser)
-    res.send(revisedUser)
+    res.send({recentColors: user.recentColors})
   })
 })
 
@@ -77,8 +76,8 @@ router.post('/dash_color', verify, async (req, res) => {
 
   lifx.setState(`id:${user.lifxID}`, { color: req.body.color }, (err, data) => {
     if (err) return res.status(400).send({ msg: 'Issue connecting to lifx' })
-    const revisedUser = { recentColors: user.recentColors, name: user.name, friends: user.friends };
-    res.send(revisedUser)
+
+    res.send(data)
   })
 });
 
@@ -88,10 +87,34 @@ router.post('/dash_kelvin', verify, async (req, res) => {
 
   lifx.setState(`id:${user.lifxID}`, { color: `kelvin:${req.body.kelvin}` }, (err, data) => {
     if (err) return res.status(400).send({ msg: 'Issue connecting to lifx' })
-    const revisedUser = { recentColors: user.recentColors, name: user.name, friends: user.friends };
-    res.send(revisedUser)
+
+    res.send(data)
   })
 });
 
+router.post('/activate_scene', verify, async (req, res) => {
+  let user = await User.findOne({ '_id': req.user._id });
+  if (!user) return res.status(400).send({ msg: 'Trouble finding user information' })
+
+  const updatedBrightnessScene = {
+    color: req.body.scene.color,
+    brightness: req.body.scene.brightness/100
+  }
+  lifx.setState(`id:${user.lifxID}`, updatedBrightnessScene, (err, data) => {
+    if (err) return res.status(400).send({ msg: 'Issue connecting to lifx' })
+    res.send(data)
+  })
+})
+
+router.post('/state', async (req, res) => {
+  lifx.listLights(`id:${req.body.lifxID}`, (err, data) => {
+    if(err) return res.status(400).send({msg: 'Could not find lifx state'})
+    let parsed = JSON.parse(data);
+    res.send({color: parsed[0].color, power: parsed[0].power, brightness: parsed[0].brightness})
+  })
+})
+
 
 module.exports = router;
+
+
