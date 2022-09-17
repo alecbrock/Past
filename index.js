@@ -27,7 +27,7 @@ app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 app.use('/lifx', lifxRoutes);
 
-app.get('/', verify, (req, res) => {
+app.get('/', (req, res) => {
   res.send('verified on all fronts')
 });
 
