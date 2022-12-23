@@ -93,10 +93,10 @@ router.post('/user_info', verify, async (req, res) => {
     formattedPendingColors = pendingFriendColors.map((x) => ({ [`${x.name}`]: x.profileColor }))
   }
 
-  let resultState = await axios.post('https://past-alec.herokuapp.com/lifx/state', { lifxID: user.lifxID, accessToken: user.accessToken })
+  let resultState = await axios.post('https://past-alecbrock.vercel.app/lifx/state', { lifxID: user.lifxID, accessToken: user.accessToken })
   if (!resultState) return res.status(400).send({ msg: 'Could not find lifx state' })
 
-  let resultCommunityScenes = await axios.post('https://past-alec.herokuapp.com/community/community_page', {pageNumber: 1, nPerPage: 12})
+  let resultCommunityScenes = await axios.post('https://past-alecbrock.vercel.app/community/community_page', {pageNumber: 1, nPerPage: 12})
 
   const result = {
     colors: formattedFriendColors.concat(formattedPendingColors).reduce(((r, c) => Object.assign(r, c)), {}),
