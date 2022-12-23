@@ -23,6 +23,9 @@ const userSchema = new Schema({
   lifxID: {
     type: String
   },
+  accessToken: {
+    type: String
+  },
   friends: {
     type: Array
   },
@@ -36,7 +39,10 @@ const userSchema = new Schema({
     type: String
   },
   scenes: {
-    type: Object
+    type: Schema.Types.Mixed
+  },
+  exitEffect: {
+    type: Boolean
   }
 });
 

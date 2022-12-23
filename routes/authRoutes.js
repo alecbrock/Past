@@ -23,11 +23,13 @@ router.post('/register', async (req, res) => {
     email: req.body.email,
     password: hashedPassword,
     lifxID: '',
+    accessToken: '',
     friends: [req.body.name],
     recentColors: [],
     pendingFriends: [],
     profileColor: '#5D3FD3',
-    scenes: {}
+    scenes: {default: {color: '#5D3FD3', brightness: 100.0}},
+    exitEffect: false,
   })
 
   try {
@@ -48,7 +50,7 @@ router.post('/login', async (req, res) => {
   const validPass = await bcrypt.compare(req.body.password, user.password);
   if (!validPass) return res.status(400).send({ msg: 'Invalid password', unlogged: true })
 
-  const token = jwt.sign({ _id: user._id }, process.env.TOKEN, { expiresIn: '300 min' })
+  const token = jwt.sign({ _id: user._id }, process.env.TOKEN, { expiresIn: '10000 min' })
 
   res
     .header('Access-Control-Expose-Headers', 'auth-token')
@@ -59,6 +61,9 @@ router.post('/login', async (req, res) => {
 router.post('/check_auth', verify, async (req, res) => {
   console.log('hit on auth check')
   //possibly check to see if user documents have changed somehow and send that down
+  //by checking things out of users control like friends changing their profile color and lifx state changing
+  //so upon authcheck will send what is in redux
+  //in here will assert if both are equal and if not send down the new information so users dont have to refresh
   res.send('good to go')
 })
 
@@ -68,6 +73,12 @@ router.post('/user_info', verify, async (req, res) => {
 
   let user = await User.findOne({ '_id': req.user._id });
   if (!user) return res.status(400).send({ msg: 'Trouble finding user information' })
+
+  if(!user.lifxID) return res.send({
+    colors: {},
+    user: { recentColors: user.recentColors, name: user.name, friends: user.friends, pendingFriends: user.pendingFriends, profileColor: user.profileColor, scenes: user.scenes },
+    state: {}
+  })
 
   let friendColors = await User.find({ 'name': { $in: user.friends } });
   if (!friendColors) return res.status(400).send({ msg: 'Trouble finding friend proile colors' })
@@ -82,16 +93,21 @@ router.post('/user_info', verify, async (req, res) => {
     formattedPendingColors = pendingFriendColors.map((x) => ({ [`${x.name}`]: x.profileColor }))
   }
 
-  let resultState = await axios.post('http://localhost:3002/lifx/state', { lifxID: user.lifxID })
+  let resultState = await axios.post('https://past-alec.herokuapp.com/lifx/state', { lifxID: user.lifxID, accessToken: user.accessToken })
   if (!resultState) return res.status(400).send({ msg: 'Could not find lifx state' })
+
+  let resultCommunityScenes = await axios.post('https://past-alec.herokuapp.com/community/community_page', {pageNumber: 1, nPerPage: 12})
 
   const result = {
     colors: formattedFriendColors.concat(formattedPendingColors).reduce(((r, c) => Object.assign(r, c)), {}),
     user: { recentColors: user.recentColors, name: user.name, friends: user.friends, pendingFriends: user.pendingFriends, profileColor: user.profileColor, scenes: user.scenes },
-    state: resultState.data
+    state: resultState.data,
+    communityScenes: resultCommunityScenes.data
   }
   res.send(result);
 })
+
+//nedd to send down first page of community scenes ^^^
 
 // router.post('/checkAuth_color', verify, async (req, res) => {
 //   let formattedFriendColors = [], formattedPendingColors = [];
