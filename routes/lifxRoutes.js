@@ -117,7 +117,7 @@ router.post('/activate_scene', verify, async (req, res) => {
   }
 
 
-  await lifx.setState(user.accessToken, `id:${user.lifxID}`, updatedBrightnessScene, (err, data) => {
+  lifx.setState(user.accessToken, `id:${user.lifxID}`, updatedBrightnessScene, (err, data) => {
     if (err) return res.status(400).send({ msg: 'Issue connecting to lifx' })
   })
 
@@ -135,7 +135,7 @@ router.post('/activate_scene', verify, async (req, res) => {
       if (err) return res.status(400).send({ msg: 'Issue connecting to lifx' })
     })
   } else if (name === "Pulse") {
-    await lifx.pulseEffect(user.accessToken, `id:${user.lifxID}`, color, fromColor, period, cycles, undefined, undefined, (err, data) => {
+    lifx.pulseEffect(user.accessToken, `id:${user.lifxID}`, color, fromColor, period, cycles, undefined, undefined, (err, data) => {
       console.log(err, 'THIS IS ERROR MESSAGE FOR PULSE')
       console.log(data, 'THIS IS DATA FROM PULSE')
       if (err) return res.status(400).send({ msg: 'Issue connecting to lifx' })
