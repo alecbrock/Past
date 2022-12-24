@@ -118,11 +118,11 @@ router.post('/activate_scene', verify, async (req, res) => {
 
   await lifx.setState(user.accessToken, `id:${user.lifxID}`, updatedBrightnessScene, (err, data) => {
     if (err) return res.status(400).send({ msg: 'Issue connecting to lifx' })
+    if (!req.body.scene.effect) return res.end();
   })
 
 
   console.log(req.body.scene.effect, !req.body.scene.effect);
-  if (!req.body.scene.effect) return res.send();
   // console.log('after color and brightness');
   // await sleep(1000);
   // const { color, fromColor, period, cycles, intensity, colorArray, name } = req.body.scene.effect;
