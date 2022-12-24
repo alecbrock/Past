@@ -137,6 +137,7 @@ router.post('/activate_scene', verify, async (req, res) => {
   } else if (name === "Pulse") {
     lifx.pulseEffect(user.accessToken, `id:${user.lifxID}`, color, fromColor, period, cycles, undefined, undefined, (err, data) => {
       console.log(err, 'THIS IS ERROR MESSAGE FOR PULSE')
+      console.log(data, 'THIS IS DATA FROM PULSE')
       if (err) return res.status(400).send({ msg: 'Issue connecting to lifx' })
     })
   } else if (name === "Candle") {
