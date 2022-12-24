@@ -115,7 +115,7 @@ router.post('/activate_scene', verify, async (req, res) => {
   }
 
   blah();
-  res.end();
+  res.send();
 //   let user = await User.findOne({ '_id': req.user._id });
 //   if (!user) return res.status(400).send({ msg: 'Trouble finding user information' })
 //   if (!user.lifxID) return res.status(400).send({ msg: 'Must set lifx ID' })
