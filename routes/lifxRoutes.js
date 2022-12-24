@@ -138,11 +138,11 @@ router.post('/activate_scene', verify, async (req, res) => {
       res.end()
     })
   } else if (name === "Candle") {
+    res.end()
     lifx.candleEffect(user.accessToken, `id:${user.lifxID}`, intensity / 10, cycles, (err, data) => {
       console.log(err, 'THIS IS ERROR MESSAGE FOR CANDLE')
       if (err) return res.status(400).send({ msg: 'Issue connecting to lifx' })
     })
-    res.end()
   } else if (name === "Cycle") {
     lifx.colorCycle(user.accessToken, `id:${user.lifxID}`, colorArray, period, cycles, undefined, undefined, undefined, (err, data) => {
       if (err) return res.status(400).send({ msg: 'Issue connecting to lifx' })
