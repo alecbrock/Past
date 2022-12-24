@@ -40,10 +40,10 @@ lifx.prototype.setPower = function (accessToken, selector, _state, _duration, cb
 
 
 
-lifx.prototype.setState = async function (accessToken, selector, obj, cb) {
+lifx.prototype.setState = function (accessToken, selector, obj, cb) {
   var url = 'https://' + accessToken + ':' + '@api.lifx.com' + '/v1/lights/' + selector + '/state';
 
-  await sendRequest(url, "PUT", obj, function (err, res, body) {
+  sendRequest(url, "PUT", obj, function (err, res, body) {
     if (err) return cb(err, null)
     cb(null, body);
   });
@@ -124,7 +124,7 @@ lifx.prototype.candleEffect = async function (accessToken, selector, _intensity,
   for (let i = 0; i < _cycles; i++) {
     let user = await User.findOne({ accessToken: accessToken });
     if (!user.exitEffect) {
-      if(user.exitEffect === null) await User.updateOne({ accessToken: accessToken}, {exitEffect: false})
+      if (user.exitEffect === null) await User.updateOne({ accessToken: accessToken }, { exitEffect: false })
       let resultBrightness = randomBrightness(_intensity);
 
       if (resultBrightness <= 1.0 && resultBrightness >= 0.8 && highOrLow === true) {
@@ -134,7 +134,7 @@ lifx.prototype.candleEffect = async function (accessToken, selector, _intensity,
       }
       highOrLow = !highOrLow;
 
-      await sendRequest(url, "PUT", { brightness: resultBrightness, fast: true }, function (err, res, body) { console.log(err, 'THIS ERROR INSIDE LIFX CANDLE')});
+      await sendRequest(url, "PUT", { brightness: resultBrightness, fast: true }, function (err, res, body) { console.log(err, 'THIS ERROR INSIDE LIFX CANDLE') });
 
     } else {
       await sendRequest(url, "PUT", { brightness: 1.0, fast: true }, function (err, res, body) { });
@@ -181,7 +181,7 @@ lifx.prototype.colorCycle = async function (accessToken, selector, _color_array,
         let fromColor = _color_array[i];
         let color = i === _color_array.length - 1 ? _color_array[0] : _color_array[i + 1];
 
-        await sendRequest(url, "POST", { color: color, from_color: fromColor, period: _period, cycles: 1, persist: _persist, power_on: _power_on, peak: _peak }, function (err, res, body) { console.log(body) });
+        await sendRequest(url, "POST", { color: color, from_color: fromColor, period: _period, cycles: 1, persist: _persist, power_on: _power_on, peak: _peak }, function (err, res, body) {  });
         await sleep(_period * 1000 + 200);
 
       } else {

@@ -80,6 +80,7 @@ router.post('/dash_color', verify, async (req, res) => {
   if (!user) return res.status(400).send({ msg: 'Trouble finding user information' })
   if (!user.lifxID) return res.status(400).send({ msg: 'Must set lifx ID' })
 
+  console.log(req.body.color);
   lifx.setState(user.accessToken, `id:${user.lifxID}`, { color: req.body.color }, (err, data) => {
     if (err) return res.status(400).send({ msg: 'Issue connecting to lifx' })
 
@@ -121,11 +122,12 @@ router.post('/activate_scene', verify, async (req, res) => {
     if (!req.body.scene.effect) return res.end();
   })
 
-
+  console.log(!req.body.scene.effect);
   await sleep(1000);
   const { color, fromColor, period, cycles, intensity, colorArray, name } = req.body.scene.effect;
 
   if (name === "Breathe") {
+    console.log(name);
     lifx.breatheEffect(user.accessToken, `id:${user.lifxID}`, color, fromColor, period, cycles, undefined, undefined, undefined, (err, data) => {
       if (err) return res.status(400).send({ msg: 'Issue connecting to lifx' })
       res.end()
@@ -136,12 +138,12 @@ router.post('/activate_scene', verify, async (req, res) => {
       res.end()
     })
   } else if (name === "Candle") {
-    console.log(err, 'THIS IS ERROR MESSAGE FOR CANDLE')
     lifx.candleEffect(user.accessToken, `id:${user.lifxID}`, intensity / 10, cycles, (err, data) => {
+      console.log(err, 'THIS IS ERROR MESSAGE FOR CANDLE')
       if (err) return res.status(400).send({ msg: 'Issue connecting to lifx' })
       res.end()
     })
-  } else {
+  } else if (name === "Cycle") {
     lifx.colorCycle(user.accessToken, `id:${user.lifxID}`, colorArray, period, cycles, undefined, undefined, undefined, (err, data) => {
       if (err) return res.status(400).send({ msg: 'Issue connecting to lifx' })
       res.end()
