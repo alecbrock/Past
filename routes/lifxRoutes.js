@@ -122,9 +122,9 @@ router.post('/activate_scene', verify, async (req, res) => {
 
 
 
-  // if (!req.body.scene.effect) return res.end();
+  if (!req.body.scene.effect) return res.end();
   // console.log('after color and brightness');
-  // await sleep(1000);
+  await sleep(1000);
   // const { color, fromColor, period, cycles, intensity, colorArray, name } = req.body.scene.effect;
 
   // if (name === "Breathe") {
