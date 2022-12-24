@@ -70,7 +70,7 @@ lifx.prototype.breatheEffect = function (accessToken, selector, _color, _from_co
 
 
 
-lifx.prototype.pulseEffect = function (accessToken, selector, _color, _from_color, _period, _cycles, _persist, _power_on, cb) {
+lifx.prototype.pulseEffect = async function (accessToken, selector, _color, _from_color, _period, _cycles, _persist, _power_on, cb) {
   var url = 'https://' + accessToken + ':' + '@api.lifx.com' + '/v1/lights/' + selector + '/effects/pulse';
   if (typeof _color == "undefined") _color = "red";
   if (typeof _from_color == "undefined") _from_color = "blue";
@@ -79,8 +79,10 @@ lifx.prototype.pulseEffect = function (accessToken, selector, _color, _from_colo
   if (typeof _persist == "undefined") _persist = false;
   if (typeof _power_on == "undefined") _power_on = true
 
-  sendRequest(url, "POST", { color: _color, from_color: _from_color, period: _period, cycles: _cycles, persist: _persist, power_on: _power_on }, function (err, res, body) {
+  console.log({ color: _color, from_color: _from_color, period: _period, cycles: _cycles, persist: _persist, power_on: _power_on }, "THIS THE DATA GIVEN TO PULSE")
+  await sendRequest(url, "POST", { color: _color, from_color: _from_color, period: _period, cycles: _cycles, persist: _persist, power_on: _power_on }, function (err, res, body) {
     console.log(err, 'THIS ERROR INSIDE LIFX PULSE')
+    console.log(body, 'THIS IS THE BODY IN PULSE')
     if (err) return cb(err, null)
     cb(null, body);
   });
