@@ -100,7 +100,6 @@ router.post('/dash_kelvin', verify, async (req, res) => {
 });
 
 router.post('/activate_scene', verify, async (req, res) => {
-  console.log(req.body, 'THIS IS THE BODY OF REQUEST')
   let user = await User.findOne({ '_id': req.user._id });
   if (!user) return res.status(400).send({ msg: 'Trouble finding user information' })
   if (!user.lifxID) return res.status(400).send({ msg: 'Must set lifx ID' })
@@ -121,9 +120,7 @@ router.post('/activate_scene', verify, async (req, res) => {
     if (err) return res.status(400).send({ msg: 'Issue connecting to lifx' })
   })
 
-  // await lifx.listLights(user.accessToken, `id:${user.lifxID}`, (err, data) => {
-  //   console.log(data);
-  // })
+
 
   if (!req.body.scene.effect) return res.end();
   console.log('after color and brightness');
@@ -167,7 +164,7 @@ router.post('/activate_scene', verify, async (req, res) => {
   // })
 
   // if (!effectResult) return res.status(400).send({ msg: 'Error starting effect' });
-  res.end()
+  // res.end()
 
 })
 
