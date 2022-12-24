@@ -122,6 +122,7 @@ lifx.prototype.candleEffect = async function (accessToken, selector, _intensity,
   }
 
   for (let i = 0; i < _cycles; i++) {
+    console.log('hit in candle');
     let user = await User.findOne({ accessToken: accessToken });
     if (!user.exitEffect) {
       if (user.exitEffect === null) await User.updateOne({ accessToken: accessToken }, { exitEffect: false })
