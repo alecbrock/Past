@@ -100,6 +100,7 @@ router.post('/dash_kelvin', verify, async (req, res) => {
 });
 
 router.post('/activate_scene', verify, async (req, res) => {
+  console.log(req.body, 'THIS IS THE BODY OF REQUEST')
   let user = await User.findOne({ '_id': req.user._id });
   if (!user) return res.status(400).send({ msg: 'Trouble finding user information' })
   if (!user.lifxID) return res.status(400).send({ msg: 'Must set lifx ID' })
@@ -135,9 +136,11 @@ router.post('/activate_scene', verify, async (req, res) => {
     })
   } else if (name === "Pulse") {
     lifx.pulseEffect(user.accessToken, `id:${user.lifxID}`, color, fromColor, period, cycles, undefined, undefined, (err, data) => {
+      console.log(err, 'THIS IS ERROR MESSAGE FOR PULSE')
       if (err) return res.status(400).send({ msg: 'Issue connecting to lifx' })
     })
   } else if (name === "Candle") {
+    console.log(err, 'THIS IS ERROR MESSAGE FOR CANDLE')
     lifx.candleEffect(user.accessToken, `id:${user.lifxID}`, intensity / 10, cycles, (err, data) => {
       if (err) return res.status(400).send({ msg: 'Issue connecting to lifx' })
     })

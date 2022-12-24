@@ -80,6 +80,7 @@ lifx.prototype.pulseEffect = function (accessToken, selector, _color, _from_colo
   if (typeof _power_on == "undefined") _power_on = true
 
   sendRequest(url, "POST", { color: _color, from_color: _from_color, period: _period, cycles: _cycles, persist: _persist, power_on: _power_on }, function (err, res, body) {
+    console.log(err, 'THIS ERROR INSIDE LIFX PULSE')
     if (err) return cb(err, null)
     cb(null, body);
   });
@@ -130,7 +131,7 @@ lifx.prototype.candleEffect = async function (accessToken, selector, _intensity,
       }
       highOrLow = !highOrLow;
 
-      await sendRequest(url, "PUT", { brightness: resultBrightness, fast: true }, function (err, res, body) { });
+      await sendRequest(url, "PUT", { brightness: resultBrightness, fast: true }, function (err, res, body) { console.log(err, 'THIS ERROR INSIDE LIFX CANDLE')});
 
     } else {
       await sendRequest(url, "PUT", { brightness: 1.0, fast: true }, function (err, res, body) { });
