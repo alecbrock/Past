@@ -138,6 +138,7 @@ lifx.prototype.candleEffect = async function (accessToken, selector, _intensity,
       await sendRequest(url, "PUT", { brightness: resultBrightness, fast: true }, function (err, res, body) { console.log(err, 'THIS ERROR INSIDE LIFX CANDLE') });
 
     } else {
+      console.log('should not be in here');
       await sendRequest(url, "PUT", { brightness: 1.0, fast: true }, function (err, res, body) { });
       await User.updateOne({ accessToken: accessToken }, { exitEffect: false });
       return;
