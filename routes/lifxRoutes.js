@@ -289,12 +289,13 @@ router.post('/cancel_effect', verify, async (req, res) => {
   let userToExit = await User.findOne({ name: req.body.username });
   if (req.body.effectName === 'Candle' || req.body.effectName === 'Cycle') {
     await User.updateOne({ name: req.body.username }, { exitEffect: userToExit.exitEffect === null ? false : true });
+      res.end();
   } else {
     await lifx.cancelEffect(userToExit.accessToken, `id:${userToExit.lifxID}`, (err, data) => {
       if (err) return res.status(400).send({ msg: 'Trouble canceling effect' })
+      res.end();
     })
   }
-  res.end();
 })
 
 //possible issue with effects that constantly hit lifxl
