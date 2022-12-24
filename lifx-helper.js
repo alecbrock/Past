@@ -83,6 +83,7 @@ lifx.prototype.pulseEffect = async function (accessToken, selector, _color, _fro
   await sendRequest(url, "POST", { color: _color, from_color: _from_color, period: _period, cycles: _cycles, persist: _persist, power_on: _power_on }, function (err, res, body) {
     console.log(err, 'THIS ERROR INSIDE LIFX PULSE')
     console.log(body, 'THIS IS THE BODY IN PULSE')
+    console.log(res, 'THIS IS THE LIFX RESPONSE')
     if (err) return cb(err, null)
     cb(null, body);
   });
