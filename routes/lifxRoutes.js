@@ -116,7 +116,7 @@ router.post('/activate_scene', verify, async (req, res) => {
   }
 
 
-  lifx.setState(user.accessToken, `id:${user.lifxID}`, updatedBrightnessScene, (err, data) => {
+  await lifx.setState(user.accessToken, `id:${user.lifxID}`, updatedBrightnessScene, (err, data) => {
     if (err) return res.status(400).send({ msg: 'Issue connecting to lifx' })
   })
 
