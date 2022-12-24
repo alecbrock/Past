@@ -40,10 +40,10 @@ lifx.prototype.setPower = function (accessToken, selector, _state, _duration, cb
 
 
 
-lifx.prototype.setState = function (accessToken, selector, obj, cb) {
+lifx.prototype.setState = async function (accessToken, selector, obj, cb) {
   var url = 'https://' + accessToken + ':' + '@api.lifx.com' + '/v1/lights/' + selector + '/state';
 
-  sendRequest(url, "PUT", obj, function (err, res, body) {
+  await sendRequest(url, "PUT", obj, function (err, res, body) {
     if (err) return cb(err, null)
     cb(null, body);
   });
