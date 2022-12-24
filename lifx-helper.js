@@ -90,7 +90,6 @@ lifx.prototype.pulseEffect = async function (accessToken, selector, _color, _fro
 }
 
 lifx.prototype.candleEffect = async function (accessToken, selector, _intensity, _cycles, cb) {
-  cb(null, 'started effect')
 
   var url = 'https://' + accessToken + ':' + '@api.lifx.com' + '/v1/lights/' + selector + '/state';
   let highOrLow = true;
@@ -145,6 +144,7 @@ lifx.prototype.candleEffect = async function (accessToken, selector, _intensity,
     }
   }
   await User.updateOne({ accessToken: accessToken }, { exitEffect: null });
+  cb(null, 'started effect')
 }
 
 lifx.prototype.colorCycle = async function (accessToken, selector, _color_array, _period, _cycles, _persist, _power_on, _peak, cb) {
