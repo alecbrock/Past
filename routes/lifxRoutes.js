@@ -101,54 +101,64 @@ router.post('/dash_kelvin', verify, async (req, res) => {
 });
 
 router.post('/activate_scene', verify, async (req, res) => {
-  let user = await User.findOne({ '_id': req.user._id });
-  if (!user) return res.status(400).send({ msg: 'Trouble finding user information' })
-  if (!user.lifxID) return res.status(400).send({ msg: 'Must set lifx ID' })
-
-  const updatedBrightnessScene = {
-    color: req.body.scene.color,
-    brightness: req.body.scene.brightness / 100
-  };
 
   const sleep = (ms) => {
+    console.log('hey');
     return new Promise((resolve) => {
       setTimeout(resolve, ms);
     });
   }
-
-
-  await lifx.setState(user.accessToken, `id:${user.lifxID}`, updatedBrightnessScene, (err, data) => {
-    if (err) return res.status(400).send({ msg: 'Issue connecting to lifx' })
-    if (!req.body.scene.effect) return res.end();
-  })
-
-  console.log(!req.body.scene.effect);
-  await sleep(1000);
-  const { color, fromColor, period, cycles, intensity, colorArray, name } = req.body.scene.effect;
-
-  if (name === "Breathe") {
-    console.log(name);
-    lifx.breatheEffect(user.accessToken, `id:${user.lifxID}`, color, fromColor, period, cycles, undefined, undefined, undefined, (err, data) => {
-      if (err) return res.status(400).send({ msg: 'Issue connecting to lifx' })
-      res.end()
-    })
-  } else if (name === "Pulse") {
-    lifx.pulseEffect(user.accessToken, `id:${user.lifxID}`, color, fromColor, period, cycles, undefined, undefined, (err, data) => {
-      if (err) return res.status(400).send({ msg: 'Issue connecting to lifx' })
-      res.end()
-    })
-  } else if (name === "Candle") {
-    res.end()
-    lifx.candleEffect(user.accessToken, `id:${user.lifxID}`, intensity / 10, cycles, (err, data) => {
-      console.log(err, 'THIS IS ERROR MESSAGE FOR CANDLE')
-      if (err) return res.status(400).send({ msg: 'Issue connecting to lifx' })
-    })
-  } else if (name === "Cycle") {
-    lifx.colorCycle(user.accessToken, `id:${user.lifxID}`, colorArray, period, cycles, undefined, undefined, undefined, (err, data) => {
-      if (err) return res.status(400).send({ msg: 'Issue connecting to lifx' })
-      res.end()
-    })
+  const blah = async () => {
+    for(let i = 0; i < 1000; i++) {
+      await sleep(1000)
+    }
   }
+
+  blah();
+  res.end();
+//   let user = await User.findOne({ '_id': req.user._id });
+//   if (!user) return res.status(400).send({ msg: 'Trouble finding user information' })
+//   if (!user.lifxID) return res.status(400).send({ msg: 'Must set lifx ID' })
+
+//   const updatedBrightnessScene = {
+//     color: req.body.scene.color,
+//     brightness: req.body.scene.brightness / 100
+//   };
+
+
+
+//   await lifx.setState(user.accessToken, `id:${user.lifxID}`, updatedBrightnessScene, (err, data) => {
+//     if (err) return res.status(400).send({ msg: 'Issue connecting to lifx' })
+//     if (!req.body.scene.effect) return res.end();
+//   })
+
+  // console.log(!req.body.scene.effect);
+  // await sleep(1000);
+  // const { color, fromColor, period, cycles, intensity, colorArray, name } = req.body.scene.effect;
+
+  // if (name === "Breathe") {
+  //   console.log(name);
+  //   lifx.breatheEffect(user.accessToken, `id:${user.lifxID}`, color, fromColor, period, cycles, undefined, undefined, undefined, (err, data) => {
+  //     if (err) return res.status(400).send({ msg: 'Issue connecting to lifx' })
+  //     res.end()
+  //   })
+  // } else if (name === "Pulse") {
+  //   lifx.pulseEffect(user.accessToken, `id:${user.lifxID}`, color, fromColor, period, cycles, undefined, undefined, (err, data) => {
+  //     if (err) return res.status(400).send({ msg: 'Issue connecting to lifx' })
+  //     res.end()
+  //   })
+  // } else if (name === "Candle") {
+  //   res.end()
+  //   lifx.candleEffect(user.accessToken, `id:${user.lifxID}`, intensity / 10, cycles, (err, data) => {
+  //     console.log(err, 'THIS IS ERROR MESSAGE FOR CANDLE')
+  //     if (err) return res.status(400).send({ msg: 'Issue connecting to lifx' })
+  //   })
+  // } else if (name === "Cycle") {
+  //   lifx.colorCycle(user.accessToken, `id:${user.lifxID}`, colorArray, period, cycles, undefined, undefined, undefined, (err, data) => {
+  //     if (err) return res.status(400).send({ msg: 'Issue connecting to lifx' })
+  //     res.end()
+  //   })
+  // }
 
   // const effectResult =
   // axios.post(`http://localhost:3002/lifx/candle_effect`, {
