@@ -147,7 +147,7 @@ router.post('/share_scene', verify, async (req, res) => {
   if(!result) return res.status(400).send({msg: 'Trouble saving scene'})
   //share if not already shared
   //check collection for existing by name
-  const communityPages = await axios.post('http://localhost:3002/community/community_page', {pageNumber: 1, nPerPage: 12});
+  const communityPages = await axios.post('https://past.onrender.com/community/community_page', {pageNumber: 1, nPerPage: 12});
   if(!communityPages) return res.status(400).send({msg: 'Trouble fetching community scenes'});
   res.send(communityPages.data);
   //send the updated community scenes in here
